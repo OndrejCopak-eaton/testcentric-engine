@@ -201,5 +201,22 @@ namespace TestCentric.Engine.Services
             Assert.That(process.StartInfo.Arguments.Replace('\\', '/'), Does.StartWith(agentPath));
         }
     }
+
+    public class Net60AgentLauncherTests : AgentLauncherTests<Net60AgentLauncher>
+    {
+        protected override string[] SupportedRuntimes => new string[] { "netcore-1.1", "netcore-2.1", "netcore-3.1", "netcore-5.0", "netcore-6.0" };
+
+        private string AgentDir = Path.Combine(TestContext.CurrentContext.TestDirectory, "agents/net6.0/").Replace('\\', '/');
+
+        private string AgentName = "testcentric-agent.dll";
+        private string AgentNameX86 = "testcentric-agent-x86.dll";
+
+        protected override void CheckAgentPath(Process process, bool x86)
+        {
+            string agentPath = AgentDir + (x86 ? AgentNameX86 : AgentName);
+            Assert.That(process.StartInfo.FileName, Is.EqualTo("dotnet"));
+            Assert.That(process.StartInfo.Arguments.Replace('\\', '/'), Does.StartWith(agentPath));
+        }
+    }
 }
 #endif
